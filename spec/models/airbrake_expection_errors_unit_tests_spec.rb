@@ -21,6 +21,7 @@ describe 'Aribrake-1805332790232222219' do
 		# With a stub, if the message might be received with other args as well, 
 		# you should stub a default value first, 
 		# and then stub or mock the same message using with to constrain to specific arguments.
+		@assignment = nil
 		allow(@assignment).to receive(:try){}
 		allow(@questionnaire).to receive(:try){}
 		allow(@assignment).to receive(:try).with('id'.to_sym).and_return(1)
@@ -32,10 +33,12 @@ describe 'Aribrake-1805332790232222219' do
 
 	it 'will not raise error even if instance variables are nil' do
 		rc = ResponseController.new
+		@assignment = nil
 		allow(@assignment).to receive(:try){}
 		allow(@questionnaire).to receive(:try){}
 		allow(@assignment).to receive(:try).with('id'.to_sym).and_return(nil)
 		allow(@questionnaire).to receive(:try).with('id'.to_sym).and_return(nil)
 		expect{rc.send(:set_dropdown_or_scale)}.not_to raise_error(NoMethodError)
+		expect(rc.send(:set_dropdown_or_scale)).to eq('scale')
 	end
 end
