@@ -58,7 +58,7 @@ end
 describe MenuItemsController do
   # Airbrake-1766139777878852159
   describe '#link', type: :controller do
-    it "can handle the situation (redirect_to '/') when the session[:menu] is nil"do
+    it "can handle the situation (redirect_to '/') when the session[:menu] is nil" do
       controller.params[:name] = "manage/courses"
       controller.session[:menu] = nil
       get :link
@@ -76,7 +76,8 @@ end
 
 describe GradesController do
   # Airbrake-1784274870078015831
-  describe '#redirect_when_disallowed' do
+
+  describe '#redirect_when_disallowed', type: :controller do
     before(:each) do
       controller.instance_variable_set(:@participant, double('Participant', 
                                                               team: build(:assignment_team),
@@ -95,6 +96,28 @@ describe GradesController do
       allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(double('User', id: 1))
       allow(AssignmentParticipant).to receive_message_chain(:where, :first).with(any_args).and_return(double('User', user_id: 1))
       expect(controller.send(:redirect_when_disallowed)).to eq(false)
+    end
+  end
+end
+
+describe QuestionnairesController do
+  # Airbrake-1817691804353957801
+  describe '#save_all_questions', :type => :request do
+    it 'will not raise error when params[:question] is nil' do
+      controller.params = {
+        id: 1,
+        save: true,
+        question: nil,
+        export: false,
+        import: false,
+        view_advice: false
+      }
+      # user = build(:instructor)
+      # stub_current_user(user, user.role.name, user.role)
+      # create(:assignment_questionnaire)
+      post "/save_all_questions"
+      expect(response.code).to eq("302")
+      expect(response).to redirect_to '/questionnaires/1/edit'
     end
   end
 end
