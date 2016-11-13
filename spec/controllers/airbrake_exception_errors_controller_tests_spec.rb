@@ -99,25 +99,3 @@ describe GradesController do
     end
   end
 end
-
-describe QuestionnairesController do
-  # Airbrake-1817691804353957801
-  describe '#save_all_questions', :type => :request do
-    it 'will not raise error when params[:question] is nil' do
-      controller.params = {
-        id: 1,
-        save: true,
-        question: nil,
-        export: false,
-        import: false,
-        view_advice: false
-      }
-      # user = build(:instructor)
-      # stub_current_user(user, user.role.name, user.role)
-      # create(:assignment_questionnaire)
-      post "/save_all_questions"
-      expect(response.code).to eq("302")
-      expect(response).to redirect_to '/questionnaires/1/edit'
-    end
-  end
-end
